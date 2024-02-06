@@ -5,7 +5,7 @@ const objects = [
     { name: 'Orange', image: 'orange.png' },    
     { name: 'Grape', image: 'grape.png' },
     { name: 'Mango', image: 'mango.png' },
-    { name: 'Pear', image: 'pear.png' },
+    { name: 'Pear', image: 'pear.png' }
 ];
 
 // Initialize the board
