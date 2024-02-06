@@ -10,8 +10,8 @@ const objects = [
 
 // Initialize the board
 const board = [];
-const numRows = 6;
-const numCols = 6;
+const numRows = 10;
+const numCols = 10;
 let winnerFound = false;
 
 // Initialize the board with random objects, ensuring no more than one match in each direction
@@ -54,31 +54,55 @@ function renderBoard() {
             box.classList.add('bingo-box');
             box.setAttribute('data-row', i);
             box.setAttribute('data-col', j);
-            box.innerHTML = `<img src="images/${board[i][j].image}" alt="${board[i][j].name}" />`;
             box.addEventListener('click', handleClick);
+            //box.innerHTML = `<img src="images/${board[i][j].image}" alt="${board[i][j].name}" />`;
+            //const img = document.createElement('img');
+            //img.src = `images/${board[i][j].image}`;
+            //img.alt = board[i][j].name;
+            //box.appendChild(img);
+            //bingoBoard.appendChild(box);
+            
+
+            box.style.backgroundImage = `url(images/${board[i][j].image})`;
+            box.querySelector("button");
             bingoBoard.appendChild(box);
         }
         bingoBoard.innerHTML += '<br>';
     }
+    bingoBoard.addEventListener('click', function(event) {
+        if (!event.target.classList.contains('bingo-box')) {
+            console.log('Clicked element:', event.target);
+            return;
+        }
+        handleClick(event);
+    });
 }
 
 // Handle click event on a box
 function handleClick(event) {
+    //console.log(event);
+   // return
     if (winnerFound) return;
-    
+  
     const row = parseInt(event.target.getAttribute('data-row'));
     const col = parseInt(event.target.getAttribute('data-col'));
     const clickedObject = board[row][col];
     
-    // Change the object in the clicked box
-    const randomIndex = Math.floor(Math.random() * objects.length);
-    board[row][col] = objects[randomIndex];
-    event.target.innerHTML = `<img src="images/${board[row][col].image}" alt="${board[row][col].name}" />`;
-
     // Check for winning pattern
     if (checkForWin(row, col, clickedObject)) {
         displayWinnerMessage();
     }
+
+    // Change the object in the clicked box
+    const randomIndex = Math.floor(Math.random() * objects.length);
+    board[row][col] = objects[randomIndex];
+    //event.target.innerHTML = `<img src="images/${board[row][col].image}" alt="${board[row][col].name}" />`;
+    event.target.style.backgroundImage = `url(images/${board[row][col].image})`;
+
+
+
+  
+
 }
 
 // Check for winning pattern
