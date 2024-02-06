@@ -10,8 +10,8 @@ const objects = [
 
 // Initialize the board
 const board = [];
-const numRows = 10;
-const numCols = 10;
+const numRows = 5;
+const numCols = 6;
 let winnerFound = false;
 
 // Initialize the board with random objects, ensuring no more than one match in each direction
@@ -43,6 +43,41 @@ function initializeBoard() {
         board.push(row);
     }
 }
+// Initialize the board with random objects, ensuring no winning patterns exist initially
+
+
+
+/*function initializeBoard() {
+    const maxOccurrences = 2; // Maximum allowed occurrences of an object on a row, column, or diagonal
+
+    for (let i = 0; i < numRows; i++) {
+        const row = [];
+        for (let j = 0; j < numCols; j++) {
+            let currentObject;
+
+            // Ensure no more than the maximum allowed occurrences in each direction (up, left, diagonal-up-left, diagonal-up-right)
+            do {
+                const randomIndex = Math.floor(Math.random() * objects.length);
+                currentObject = objects[randomIndex];
+
+                const occurrencesInRow = row.filter(obj => obj?.name === currentObject.name).length;
+                const occurrencesInCol = board.reduce((acc, row) => acc + (row[j]?.name === currentObject.name ? 1 : 0), 0);
+                const occurrencesInDiagonalUpLeft = board.reduce((acc, row, rowIndex) => acc + (row[j - i + rowIndex]?.name === currentObject.name ? 1 : 0), 0);
+                const occurrencesInDiagonalUpRight = board.reduce((acc, row, rowIndex) => acc + (row[j + i - rowIndex]?.name === currentObject.name ? 1 : 0), 0);
+
+                if (occurrencesInRow >= maxOccurrences || occurrencesInCol >= maxOccurrences ||
+                    occurrencesInDiagonalUpLeft >= maxOccurrences || occurrencesInDiagonalUpRight >= maxOccurrences) {
+                    // If max occurrences reached, try again with a different object
+                    continue;
+                }
+
+                // If the object can be placed without exceeding the maximum occurrences, add it to the row
+                row.push(currentObject);
+            } while (!currentObject);
+        }
+        board.push(row);
+    }
+}*/
 
 // Render the board on the UI
 function renderBoard() {
@@ -61,8 +96,6 @@ function renderBoard() {
             //img.alt = board[i][j].name;
             //box.appendChild(img);
             //bingoBoard.appendChild(box);
-            
-
             box.style.backgroundImage = `url(images/${board[i][j].image})`;
             box.querySelector("button");
             bingoBoard.appendChild(box);
@@ -81,17 +114,14 @@ function renderBoard() {
 // Handle click event on a box
 function handleClick(event) {
     //console.log(event);
-   // return
+   //return
     if (winnerFound) return;
   
     const row = parseInt(event.target.getAttribute('data-row'));
     const col = parseInt(event.target.getAttribute('data-col'));
     const clickedObject = board[row][col];
     
-    // Check for winning pattern
-    if (checkForWin(row, col, clickedObject)) {
-        displayWinnerMessage();
-    }
+    
 
     // Change the object in the clicked box
     const randomIndex = Math.floor(Math.random() * objects.length);
@@ -99,14 +129,14 @@ function handleClick(event) {
     //event.target.innerHTML = `<img src="images/${board[row][col].image}" alt="${board[row][col].name}" />`;
     event.target.style.backgroundImage = `url(images/${board[row][col].image})`;
 
-
-
-  
-
+    // Check for winning pattern
+    if (checkForWin(row, col, clickedObject)) {
+        winnerFound = true; //Setting this to true stops further clicks
+        displayWinnerMessage();    
+    }
 }
 
-// Check for winning pattern
-function checkForWin(row, col, clickedObject) {
+/*function checkForWin(row, col, clickedObject) {
     const directions = [[1, 0], [0, 1], [1, 1], [1, -1]]; // down, right, diagonal-down-right, diagonal-down-left
     
     for (const [dx, dy] of directions) {
@@ -133,7 +163,47 @@ function checkForWin(row, col, clickedObject) {
     }
     
     return false;
+}*/
+
+// Check for winning pattern
+function checkForWin(row, col, clickedObject) {
+    const directions = [
+        [1, 0],  // down
+        [0, 1],  // right
+        [1, 1],  // diagonal-down-right
+        [1, -1], // diagonal-down-left
+        [-1, 0], // up
+        [0, -1], // left
+        [-1, -1],// diagonal-up-left
+        [-1, 1]  // diagonal-up-right
+    ];
+    
+    for (const [dx, dy] of directions) {
+        let count = 1;
+        let r = row + dx;
+        let c = col + dy;
+        
+        while (r >= 0 && r < numRows && c >= 0 && c < numCols && board[r][c].name === clickedObject.name) {
+            count++;
+            r += dx;
+            c += dy;
+        }
+        
+        r = row - dx;
+        c = col - dy;
+        
+        while (r >= 0 && r < numRows && c >= 0 && c < numCols && board[r][c].name === clickedObject.name) {
+            count++;
+            r -= dx;
+            c -= dy;
+        }
+        
+        if (count >= 3) return true; // Winning pattern found
+    }
+    
+    return false;
 }
+
 
 // Display winner message
 function displayWinnerMessage() {
