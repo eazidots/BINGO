@@ -1,6 +1,6 @@
 # BINGO
 
-This is a simple implementation of a Bingo game using HTML, CSS, and JavaScript. The game features a 6x6 grid where each cell contains an image of a fruit. The objective is to find three or more fruits of the same type in a row, column, or diagonal.
+This is a simple implementation of a Bingo game using HTML, CSS, and JavaScript. The game features a 5x6 grid where each cell contains an image of a fruit. The objective is to find three or more fruits of the same type in a row, column, or diagonal.
 
 ## How to Run the Game
 
